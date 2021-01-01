@@ -405,16 +405,17 @@ def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
     if curve:
         fitness_curve = []
 
+    # Initialize problem, population and attempts counter
+    problem.reset()
+    problem.random_pop(pop_size)
+
     if init_state is not None and len(init_state) != problem.get_length():
         raise Exception("""init_state must have same length as problem.""")
 
     # Initialize problem, time and attempts counter
-    if init_state is None:
-        # Initialize problem, population and attempts counter
-        problem.reset()
-        problem.random_pop(pop_size)
-    else:
-        problem.set_state(init_state)
+    if init_state is not None:
+        problem.population.append(init_state)
+        problem.fitness.append(problem.eval_fitness(init_state))
 
     attempts = 0
     iters = 0
