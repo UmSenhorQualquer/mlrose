@@ -332,7 +332,7 @@ def simulated_annealing(problem, schedule=GeomDecay(), max_attempts=10,
 
 
 def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
-                max_iters=np.inf, curve=False, random_state=None):
+                max_iters=np.inf, init_state=None, curve=False, random_state=None):
     """Use a standard genetic algorithm to find the optimum for a given
     optimization problem.
 
@@ -351,6 +351,9 @@ def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
         Maximum number of attempts to find a better state at each step.
     max_iters: int, default: np.inf
         Maximum number of iterations of the algorithm.
+    init_state: array, default: None
+        1-D Numpy array containing starting state for algorithm.
+        If :code:`None`, then a random state is used.
     curve: bool, default: False
         Boolean to keep fitness values for a curve.
         If :code:`False`, then no curve is stored.
@@ -402,9 +405,17 @@ def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
     if curve:
         fitness_curve = []
 
-    # Initialize problem, population and attempts counter
-    problem.reset()
-    problem.random_pop(pop_size)
+    if init_state is not None and len(init_state) != problem.get_length():
+        raise Exception("""init_state must have same length as problem.""")
+
+    # Initialize problem, time and attempts counter
+    if init_state is None:
+        # Initialize problem, population and attempts counter
+        problem.reset()
+        problem.random_pop(pop_size)
+    else:
+        problem.set_state(init_state)
+
     attempts = 0
     iters = 0
 
