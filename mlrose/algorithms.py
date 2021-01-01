@@ -414,8 +414,9 @@ def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
 
     # Initialize problem, time and attempts counter
     if init_state is not None:
-        problem.population.append(init_state)
-        problem.fitness.append(problem.eval_fitness(init_state))
+        problem.population = np.array(list(problem.population[:-1]) + [init_state])
+        problem.pop_fitness = np.array(list(problem.pop_fitness[:-1]) + [problem.eval_fitness(init_state)])
+
 
     attempts = 0
     iters = 0
